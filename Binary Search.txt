@@ -1,0 +1,82 @@
+#include <iostream>
+#include <optional>
+#include <vector>
+
+using namespace std;
+
+template <typename Type>
+bool BinarySearch(std::vector<Type> collection, Type key)
+{
+    unsigned int start = 0;
+    unsigned int end = collection.size();
+    unsigned int mid = collection.size() /2;
+    
+    while (mid <= end)
+    {
+        mid = start + (end - start) / 2;
+        if (collection[mid] == key)
+            return true;
+        else
+        {
+            if ((mid == start) || (mid == end))
+                break;
+            if (collection[mid] < key)
+            {
+                start = mid;
+            }
+            else 
+            {
+                end = mid;
+            }
+        }
+    }
+    return false;
+}
+
+template <typename Type>
+bool BinarySearchRecursive(std::vector<Type> collection, unsigned int start, unsigned int end, Type key)
+{
+    if ((start + (end - start) / 2) > end)
+        return false;
+    
+    if (collection[(start + (end - start) / 2)] == key)
+            return true;
+            
+    if (((start + (end - start) / 2) == start) || ((start + (end - start) / 2) == end))
+        return false;
+    if (collection[(start + (end - start) / 2)] < key)
+    {
+        start = start + (end - start) / 2;
+    }
+    else 
+    {
+        end = start + (end - start) / 2;
+    }
+    return BinarySearchRecursive(collection, start, end, key);
+}
+
+int main()
+{
+    vector<int> collection = {10, 20, 30, 40, 50, 60, 70, 80};
+
+    cout << "Iterative : " << endl;
+    cout << (BinarySearch(collection, 5) ? "Found " : "Not found ") << 5 << endl;
+    cout << (BinarySearch(collection, 35) ? "Found " : "Not found ") << 35 << endl;
+    
+    for (auto& i : collection)
+        cout << (BinarySearch(collection, i) ? "Found " : "Not found ") << i << endl;
+        
+    cout << (BinarySearch(collection, 200) ? "Found " : "Not found ") << 200 << endl;
+    
+    cout << endl << "Recursive : " << endl;
+    
+    cout << (BinarySearchRecursive(collection, 0, collection.size(), 5) ? "Found " : "Not found ") << 5 << endl;
+    cout << (BinarySearchRecursive(collection, 0, collection.size(), 35) ? "Found " : "Not found ") << 35 << endl;
+    
+    for (auto& i : collection)
+        cout << (BinarySearchRecursive(collection, 0, collection.size(), i) ? "Found " : "Not found ") << i << endl;
+        
+    cout << (BinarySearchRecursive(collection, 0, collection.size(), 200) ? "Found " : "Not found ") << 200 << endl;
+    
+    return 0;
+}
