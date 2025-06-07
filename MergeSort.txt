@@ -1,0 +1,117 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void Merge(vector<int> & collection, unsigned int left, unsigned int mid, unsigned int right)
+{
+    int leftCollectionSize = mid - left + 1;
+    int rightCollectionSize = right - mid;
+    
+    vector<int> L(leftCollectionSize), R(rightCollectionSize);
+    
+    for (unsigned int i = 0; i < leftCollectionSize; i++)
+    {
+        L[i] = collection[left + i];
+    }
+    for (unsigned int j = 0; j < rightCollectionSize; j++)
+    {
+        R[j] = collection[mid + 1 + j];
+    }
+    
+    unsigned int i = 0, j = 0, k = left;
+    while((i < leftCollectionSize) && (j < rightCollectionSize))
+    {
+        if (L[i] < R[j])
+        {
+            collection[k] = L[i++];
+        }
+        else
+        {
+            collection[k] = R[j++];
+        }
+        k++;
+    }
+    while(i < leftCollectionSize)
+    {
+        collection[k] = L[i];
+        i++;
+        k++;
+    }
+    while(j < rightCollectionSize)
+    {
+        collection[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+
+void MergeInPlace(vector<int> & collection, unsigned int left, unsigned int mid, unsigned int right)
+{
+    int start1 = left;
+    int start2 = mid + 1;
+    
+    while ((start1 <= mid) && (start2 <= right))
+    {
+        if (collection[start1] > collection[start2])
+        {
+            unsigned int toBeMoved = collection[start2];
+            unsigned int index = start2;
+            while (index > start1)
+            {
+                collection[index] = collection[index-1];
+                index--;
+            }
+            collection[start1] = toBeMoved;
+            
+            mid++;
+            start2++;
+        }
+        start1++;
+    }
+}
+
+void MergeSort(vector<int>& collection, unsigned int left, unsigned int right, bool inPlace = true)
+{
+    if (left < right)
+    {
+        unsigned int mid = left + (right - left) / 2;
+        
+        MergeSort(collection, left, mid);
+        MergeSort(collection, mid + 1, right);
+        if (inPlace == true)
+        {
+            MergeInPlace(collection, left, mid, right);
+        }
+        else
+        {
+            Merge(collection, left, mid, right);
+        }
+    }
+}
+
+int main()
+{
+    vector<int> collection = {100, 200, 50, 30, 75, 80, 40, 12, 300, 250, 64};
+    cout << "Before MergeSort : " << endl;
+    for (auto &i : collection)
+        cout << i << endl;
+
+    MergeSort(collection, 0, collection.size()-1, false);
+    cout << "After MergeSort : " << endl;
+    for (auto &i : collection)
+        cout << i << endl;
+
+    vector<int> collection2 = {100, 200, 50, 30, 75, 80, 40, 12, 300, 250, 64};
+    cout << "Before MergeSort : " << endl;
+    for (auto &i : collection2)
+        cout << i << endl;
+        
+    MergeSort(collection2, 0, collection2.size()-1, true);
+    cout << "After in place: " << endl;
+    for (auto &i : collection2)
+        cout << i << endl;
+
+    return 0;
+}
