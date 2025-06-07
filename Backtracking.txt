@@ -1,0 +1,79 @@
+// ConsoleApplication5.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+
+using namespace std;
+
+void StringPermutations(string input, unsigned int left, unsigned int right)
+{
+    if (left == right)
+        cout << input << endl;
+
+    for (unsigned int i = left; i < right; ++i)
+    {
+        swap(input[left], input[i]);
+        StringPermutations(input, left + 1, right);
+        swap(input[left], input[i]);
+    }
+}
+
+void NumberPermutations(vector<int> &input, unsigned int left, unsigned int right)
+{
+    if (left == right)
+    {
+        for (auto const& i : input)
+            cout << i;
+        cout << endl;
+    }
+
+    for (unsigned int i = left; i < right; ++i)
+    {
+        swap(input[i], input[left]);
+        NumberPermutations(input, left + 1, right);
+        swap(input[i], input[left]);
+    }
+}
+
+void NumberPermutationsWithoutInputModification(vector<int> const& input, unordered_set<int> & generatedPermutation, unsigned int left, unsigned int right)
+{
+    if (generatedPermutation.size() == input.size())
+    {
+        for (auto const& i : generatedPermutation)
+            cout << i;
+        cout << endl;
+    }
+
+    for (unsigned int i = left; i < right; ++i)
+    {
+        if (generatedPermutation.contains(input[i]))
+            continue;
+
+        generatedPermutation.insert(input[i]);
+        NumberPermutationsWithoutInputModification(input, generatedPermutation, left, right);
+        
+        generatedPermutation.erase(input[i]);
+    }
+}
+
+int main()
+{
+    string inputString{ "abcd" };
+    StringPermutations(inputString, 0, inputString.length());
+
+    cout << endl;
+
+    vector<int> inputNumbers = { 1,2,3,4 };
+    NumberPermutations(inputNumbers, 0, inputNumbers.size());
+
+    cout << endl;
+
+    vector<int> inputNumbers2 = { 1,2,3,4 };
+    unordered_set<int> temp;
+    NumberPermutationsWithoutInputModification(inputNumbers2, temp, 0, inputNumbers2.size());
+
+    return 0;
+}
